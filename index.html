@@ -140,7 +140,78 @@
         .login-footer-text span { color: var(--brand-color); font-weight: 700; }
 
         @media (max-width: 768px) { .login-container { flex-direction: column; min-height: auto; max-width: 400px; margin: 15px; } .login-brand-side { padding: 40px 20px; } .brand-title { font-size: 1.8rem; } .login-form-side { padding: 40px 30px; } }
-        
+
+		/* MOBILE TWEAK: Navigasi Tab bisa di-swipe */
+		@media (max-width: 768px) {
+		    .nav-pills {
+		        flex-wrap: nowrap;
+		        overflow-x: auto;
+		        white-space: nowrap;
+		        padding-bottom: 5px;
+		        -webkit-overflow-scrolling: touch; /* Smooth scroll di iOS */
+		    }
+		    .nav-pills::-webkit-scrollbar {
+		        display: none; /* Sembunyikan scrollbar agar rapi */
+		    }
+		    .nav-pills .nav-link {
+		        font-size: 0.85rem;
+		        padding: 8px 12px;
+		    }
+		}
+
+		/* MOBILE TWEAK: Login Page */
+		@media (max-width: 576px) {
+		    .login-brand-side {
+		        padding: 30px 20px; /* Kurangi padding agar muat */
+		    }
+		    .brand-title {
+		        font-size: 1.5rem; /* Perkecil judul sedikit */
+		    }
+		    .login-form-side {
+		        padding: 30px 20px;
+		    }
+		}
+		
+		/* MOBILE TWEAK: Header Tabel Responsif */
+		@media (max-width: 576px) {
+		    /* Ubah flex container menjadi kolom (atas-bawah) */
+		    .card-header .d-flex.justify-content-between {
+		        flex-direction: column;
+		        align-items: stretch !important;
+		        gap: 10px !important;
+		    }
+		    
+		    /* Area tombol dan search juga jadi kolom */
+		    .card-header .d-flex.gap-2 {
+		        flex-direction: column;
+		        width: 100%;
+		    }
+		
+		    /* Search bar jadi full width */
+		    .search-input {
+		        width: 100%;
+		        min-width: 0; /* Reset min-width */
+		    }
+		
+		    /* Icon search di dalam input disesuaikan */
+		    .position-relative {
+		        width: 100%;
+		    }
+		
+		    /* Tombol jadi full width agar mudah dipencet jempol */
+		    .btn-header {
+		        width: 100%;
+		        justify-content: center;
+		        margin-top: 5px;
+		    }
+		    
+		    /* Judul tabel di tengah */
+		    .card-header h6 {
+		        text-align: center;
+		        margin-bottom: 5px;
+		    }
+		}
+		
         /* --- LOADING OVERLAY --- */
         .loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(5px); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; color: white; }
         .loading-icon-edu { font-size: 4rem; color: #fbbf24; margin-bottom: 20px; animation: bounce 2s infinite ease-in-out; filter: drop-shadow(0 0 15px rgba(251, 191, 36, 0.4)); }
@@ -1483,3 +1554,4 @@
 </body>
 
 </html>
+
