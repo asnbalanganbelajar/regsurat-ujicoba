@@ -564,7 +564,7 @@
 						</div>
 
 						<div class="mb-3">
-							<label class="form-label small fw-bold text-muted">Arsip File (Scan PDF/Gambar)</label>
+							<label class="form-label small fw-bold text-muted">File (Scan PDF/Gambar)</label>
 							<input type="file" class="d-none" id="inpFile" accept=".pdf,.jpg,.jpeg,.png">
 							
 							<div class="drop-zone" id="dropZoneArea">
@@ -789,7 +789,7 @@
                     }
                 }
             })
-            .catch(err => { if (!isBackground) { showLoading(false); Swal.fire({ icon: 'error', title: 'Sinkronisasi Gagal', text: "Tidak dapat mengambil data arsip." }); } });
+            .catch(err => { if (!isBackground) { showLoading(false); Swal.fire({ icon: 'error', title: 'Sinkronisasi Gagal', text: "Tidak dapat mengambil data." }); } });
         }
 
         function loadUsers() {
@@ -1047,12 +1047,12 @@
             const startItem = totalItems === 0 ? 0 : (currentPage - 1) * rowsPerPage + 1;
             const endItem = Math.min(currentPage * rowsPerPage, totalItems);
 
-            let controls = `<div class="rows-per-page d-flex align-items-center">Tampilkan <select class="mx-2 shadow-sm" onchange="changeRowsPerPage('${type}', this.value)">
+            let controls = `<div class="rows-per-page d-flex align-items-center">Tampil <select class="mx-2 shadow-sm" onchange="changeRowsPerPage('${type}', this.value)">
                         <option value="5" ${rowsPerPage === 5 ? 'selected' : ''}>5</option>
                         <option value="10" ${rowsPerPage === 10 ? 'selected' : ''}>10</option>
                         <option value="25" ${rowsPerPage === 25 ? 'selected' : ''}>25</option>
                         <option value="all" ${rowsPerPage > 50 ? 'selected' : ''}>Semua</option>
-                    </select> baris</div><div class="d-flex align-items-center"><span class="me-3 small text-muted">Ditampilkan ${startItem}-${endItem} dari total ${totalItems} arsip</span><nav><ul class="pagination pagination-sm mb-0 shadow-sm">
+                    </select> baris</div><div class="d-flex align-items-center"><span class="me-3 small text-muted">Tampil ${startItem}-${endItem} dari ${totalItems} data</span><nav><ul class="pagination pagination-sm mb-0 shadow-sm">
                     <li class="page-item ${currentPage === 1 ? 'disabled' : ''}"><button class="page-link" onclick="changePage('${type}', ${currentPage - 1})"><i class="fas fa-chevron-left"></i></button></li>`;
 
             for (let i = 1; i <= totalPages; i++) {
@@ -1095,7 +1095,7 @@
 							<td><span class="badge ${badgeClass} mb-1">${row[3]}</span><div class="small text-dark text-wrap">${row[4]}</div></td>
 							<td><div class="small fw-medium">${row[5]}</div></td>
 							<td><small class="text-muted text-wrap">${row[6] || '-'}</small></td>
-							<td class="text-center"><div class="d-flex justify-content-center gap-2">${btnFile}<button class="btn-circle btn-circle-warning" onclick="editData('${type}', ${realRow})" title="Edit Arsip"><i class="fas fa-pen"></i></button><button class="btn-circle btn-circle-danger" onclick="hapusData('${type}', ${realRow})" title="Hapus Arsip"><i class="fas fa-trash-alt"></i></button></div></td>
+							<td class="text-center"><div class="d-flex justify-content-center gap-2">${btnFile}<button class="btn-circle btn-circle-warning" onclick="editData('${type}', ${realRow})" title="Edit Data"><i class="fas fa-pen"></i></button><button class="btn-circle btn-circle-danger" onclick="hapusData('${type}', ${realRow})" title="Hapus Data"><i class="fas fa-trash-alt"></i></button></div></td>
 						</tr>`;
 				} else {
 					return `<tr>
@@ -1103,18 +1103,18 @@
 							<td><span class="badge ${badgeClass} mb-1">${row[5]}</span><div class="small text-dark text-wrap">${row[6]}</div></td>
 							<td><div class="small fw-medium">${row[7]}</div></td>
 							<td><small class="text-muted text-wrap">${row[8] || '-'}</small></td>
-							<td class="text-center"><div class="d-flex justify-content-center gap-2">${btnFile}<button class="btn-circle btn-circle-warning" onclick="editData('${type}', ${realRow})" title="Edit Arsip"><i class="fas fa-pen"></i></button><button class="btn-circle btn-circle-danger" onclick="hapusData('${type}', ${realRow})" title="Hapus Arsip"><i class="fas fa-trash-alt"></i></button></div></td>
+							<td class="text-center"><div class="d-flex justify-content-center gap-2">${btnFile}<button class="btn-circle btn-circle-warning" onclick="editData('${type}', ${realRow})" title="Edit Data"><i class="fas fa-pen"></i></button><button class="btn-circle btn-circle-danger" onclick="hapusData('${type}', ${realRow})" title="Hapus Data"><i class="fas fa-trash-alt"></i></button></div></td>
 						</tr>`;
 				}
 			};
 
             const tbodyMasuk = document.querySelector('#tableMasuk tbody'); tbodyMasuk.innerHTML = '';
-            if (paginatedMasuk.length === 0) tbodyMasuk.innerHTML = '<tr><td colspan="5" class="text-center py-5 text-muted"><div class="p-4 bg-light rounded d-inline-block border"><i class="fas fa-folder-open fa-3x mb-3 text-secondary"></i><p class="mb-0">Belum ada arsip ditemukan.</p></div></td></tr>';
+            if (paginatedMasuk.length === 0) tbodyMasuk.innerHTML = '<tr><td colspan="5" class="text-center py-5 text-muted"><div class="p-4 bg-light rounded d-inline-block border"><i class="fas fa-folder-open fa-3x mb-3 text-secondary"></i><p class="mb-0">Belum ada data.</p></div></td></tr>';
             else paginatedMasuk.forEach(rowObj => tbodyMasuk.innerHTML += createRow(rowObj, 'masuk'));
             renderPaginationControls(filteredMasuk.length, currentPageMasuk, rowsPerPageMasuk, 'masuk', 'paginationMasuk');
 
             const tbodyKeluar = document.querySelector('#tableKeluar tbody'); tbodyKeluar.innerHTML = '';
-            if (paginatedKeluar.length === 0) tbodyKeluar.innerHTML = '<tr><td colspan="5" class="text-center py-5 text-muted"><div class="p-4 bg-light rounded d-inline-block border"><i class="fas fa-folder-open fa-3x mb-3 text-secondary"></i><p class="mb-0">Belum ada arsip ditemukan.</p></div></td></tr>';
+            if (paginatedKeluar.length === 0) tbodyKeluar.innerHTML = '<tr><td colspan="5" class="text-center py-5 text-muted"><div class="p-4 bg-light rounded d-inline-block border"><i class="fas fa-folder-open fa-3x mb-3 text-secondary"></i><p class="mb-0">Belum ada data.</p></div></td></tr>';
             else paginatedKeluar.forEach(rowObj => tbodyKeluar.innerHTML += createRow(rowObj, 'keluar'));
             renderPaginationControls(filteredKeluar.length, currentPageKeluar, rowsPerPageKeluar, 'keluar', 'paginationKeluar');
         }
@@ -1197,7 +1197,7 @@
 
 		function openModal(type) {
 			document.getElementById('formSurat').reset(); resetDropZone(); updateModalHeaderColor(type);
-			document.getElementById('isEditMode').value = "false"; document.getElementById('realRowNumber').value = ""; document.getElementById('existingFileUrl').value = ""; document.getElementById('btnSimpan').innerText = "Simpan Arsip"; document.getElementById('fileHelpText').innerHTML = ""; document.getElementById('previewNoSurat').innerText = "-";
+			document.getElementById('isEditMode').value = "false"; document.getElementById('realRowNumber').value = ""; document.getElementById('existingFileUrl').value = ""; document.getElementById('btnSimpan').innerText = "Simpan"; document.getElementById('fileHelpText').innerHTML = ""; document.getElementById('previewNoSurat').innerText = "-";
 
 			const title = document.getElementById('modalTitle'); const katInput = document.getElementById('kategoriSurat');
 			if (type === 'masuk') {
@@ -1224,10 +1224,10 @@
 			const idxPenginput = type === 'masuk' ? 8 : 10;
 			const penginput = rowData[idxPenginput] ? rowData[idxPenginput] : "-";
 
-			if (penginput !== "-" && penginput !== currentUser.username && currentUser.role !== 'Super Admin') return Swal.fire({icon: 'error', title: 'Akses Ditolak', text: `Hanya Pemilik/Penginput Awal dan Super Admin yang dapat memodifikasi arsip ini.`});
+			if (penginput !== "-" && penginput !== currentUser.username && currentUser.role !== 'Super Admin') return Swal.fire({icon: 'error', title: 'Akses Ditolak', text: `Hanya Pemilik/Penginput Awal dan Super Admin yang dapat memodifikasi data ini.`});
 
 			openModal(type);
-			document.getElementById('isEditMode').value = "true"; document.getElementById('realRowNumber').value = rowNumber; document.getElementById('btnSimpan').innerText = "Perbarui Arsip"; document.getElementById('modalTitle').innerHTML = "<i class='fas fa-pen-square me-2'></i>Edit Arsip";
+			document.getElementById('isEditMode').value = "true"; document.getElementById('realRowNumber').value = rowNumber; document.getElementById('btnSimpan').innerText = "Perbarui Data"; document.getElementById('modalTitle').innerHTML = "<i class='fas fa-pen-square me-2'></i>Edit Data";
 
 			const d = new Date(rowData[1]); const yyyy = d.getFullYear(); const mm = String(d.getMonth() + 1).padStart(2, '0'); const dd = String(d.getDate()).padStart(2, '0');
 			document.getElementById('inpTanggal').value = `${yyyy}-${mm}-${dd}`;
@@ -1255,10 +1255,10 @@
             const rowData = dataObj.values;
             const penginput = rowData[type === 'masuk' ? 8 : 10] ? rowData[type === 'masuk' ? 8 : 10] : "-";
 
-            if (penginput !== "-" && penginput !== currentUser.username && currentUser.role !== 'Super Admin') return Swal.fire({ icon: 'error', title: 'Akses Ditolak', text: `Hanya Pemilik/Penginput Awal dan Super Admin yang dapat menghapus arsip ini.` });
+            if (penginput !== "-" && penginput !== currentUser.username && currentUser.role !== 'Super Admin') return Swal.fire({ icon: 'error', title: 'Akses Ditolak', text: `Hanya Pemilik/Penginput Awal dan Super Admin yang dapat menghapus data ini.` });
 
             Swal.fire({
-                title: 'Hapus Arsip Permanen?', 
+                title: 'Hapus Data Permanen?', 
                 html: `<p class="mb-3 text-danger">Tindakan ini tidak bisa dibatalkan.</p><div class="text-start mb-1 fw-bold small text-muted">Otorisasi Password:</div>`, 
                 input: 'password', 
                 inputAttributes: { autocapitalize: 'off', placeholder: 'Ketik password Anda' }, 
@@ -1266,7 +1266,7 @@
                 showCancelButton: true, 
                 confirmButtonColor: '#d33', 
                 cancelButtonColor: '#6c757d', 
-                confirmButtonText: 'Ya, Hapus Arsip!', 
+                confirmButtonText: 'Ya, Hapus Data!', 
                 cancelButtonText: 'Batal', 
                 reverseButtons: true,
                 preConfirm: (password) => { 
@@ -1554,4 +1554,5 @@
 </body>
 
 </html>
+
 
