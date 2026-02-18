@@ -6,6 +6,7 @@
     <title>AGENDA SURAT DIGITAL</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -91,7 +92,69 @@
         .table-custom tr:hover td { background-color: #f8fafc; }
 
         /* --- PAGINATION --- */
-        .pagination-container { display: flex; justify-content: space-between; align-items: center; padding: 1rem; border-top: 1px solid #e2e8f0; font-size: 0.85rem; color: var(--text-muted); }
+		/* --- PAGINATION PERBAIKAN --- */
+        .pagination-container { 
+            padding: 1rem; 
+            border-top: 1px solid #f1f5f9; 
+            background-color: white;
+        }
+        
+        /* Container utama pembungkus */
+        .pagination-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px; /* Jarak antar elemen */
+        }
+
+        /* Bagian Kiri (Dropdown) */
+        .pagination-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        /* Bagian Kanan (Info Data & Tombol) */
+        .pagination-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .pagination-info {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            white-space: nowrap; /* Mencegah teks turun baris */
+        }
+
+        .rows-per-page select { 
+            border: 1px solid #e2e8f0; 
+            border-radius: 6px; 
+            padding: 4px 8px; 
+            font-size: 0.85rem; 
+            color: var(--text-main); 
+            background-color: #f8fafc; 
+            outline: none; 
+            cursor: pointer;
+        }
+        
+        .rows-per-page select:focus { border-color: var(--brand-color); }
+
+        /* KHUSUS MOBILE: Susun ke bawah agar rapi */
+        @media (max-width: 576px) {
+            .pagination-wrapper {
+                flex-direction: column; /* Jadi atas-bawah */
+                justify-content: center;
+                gap: 12px;
+            }
+            .pagination-right {
+                flex-direction: column; /* Info di atas tombol */
+                gap: 10px;
+            }
+        }
         .page-link { border: none; color: var(--text-muted); padding: 5px 12px; border-radius: 6px; margin: 0 2px; font-weight: 500; }
         .page-link:hover { background-color: #eff6ff; color: var(--brand-color); }
         .page-item.active .page-link { background-color: var(--brand-color); color: white; box-shadow: 0 2px 4px rgba(13, 71, 161, 0.3); }
@@ -219,6 +282,128 @@
         @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
 		
         .swal2-container { z-index: 10000 !important; }
+		
+		/* --- MOBILE OPTIMIZATION --- */
+        
+        /* 1. Bottom Navigation untuk Mobile */
+        .bottom-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: white;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            z-index: 1040;
+            padding: 8px 0;
+            justify-content: space-around;
+        }
+
+        .bottom-nav-item {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            text-decoration: none;
+            flex: 1;
+        }
+
+        .bottom-nav-item i {
+            font-size: 1.2rem;
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .bottom-nav-item.active {
+            color: var(--brand-color);
+            font-weight: 600;
+        }
+
+        /* 2. Floating Action Button (FAB) */
+        .fab-container {
+            display: none;
+            position: fixed;
+            bottom: 80px; /* Di atas bottom nav */
+            right: 20px;
+            z-index: 1050;
+        }
+
+        .btn-fab {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: var(--brand-color);
+            color: white;
+            box-shadow: 0 4px 10px rgba(13, 71, 161, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            border: none;
+            transition: transform 0.2s;
+        }
+        
+        .btn-fab:active { transform: scale(0.95); }
+
+        /* 3. Mobile Card View (Pengganti Tabel) */
+        .mobile-card {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            border-left: 5px solid transparent;
+        }
+        
+        .mobile-card.masuk { border-left-color: var(--accent-masuk); }
+        .mobile-card.keluar { border-left-color: var(--accent-keluar); }
+
+        .m-card-header { display: flex; justify-content: space-between; margin-bottom: 8px; }
+        .m-card-date { font-size: 0.75rem; color: #64748b; display: flex; align-items: center; gap: 5px; }
+        .m-card-no { font-weight: 700; color: var(--text-main); font-size: 0.9rem; }
+        .m-card-body { font-size: 0.9rem; color: #334155; margin-bottom: 10px; }
+        .m-card-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #f1f5f9; padding-top: 10px; }
+        .m-card-tag { background: #f1f5f9; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; color: #475569; font-weight: 600; }
+
+		/* --- MEDIA QUERY KHUSUS MOBILE (Max 576px) --- */
+        @media (max-width: 576px) {
+            /* Sembunyikan Navigasi Atas & Sidebar Desktop */
+            .app-header .nav-tabs-container { display: none; }
+            .user-pill { display: none !important; }
+            
+            /* --- PERBAIKAN: HANYA TAMPIL JIKA SUDAH LOGIN --- */
+            /* Navigasi Bawah hanya muncul jika body punya class 'user-logged-in' */
+            body.user-logged-in .bottom-nav { display: flex; }
+            
+            /* FAB container default-nya hidden, nanti diatur JS showTab */
+            /* Kita hapus paksaan 'display: block' dari sini agar tidak bocor di Login */
+
+            /* Sembunyikan Tabel Desktop */
+            .table-responsive { display: none; }
+            
+            /* Container Mobile Card */
+            .mobile-list-container { display: block; }
+            
+            /* Penyesuaian Header Halaman */
+            .navbar-brand img { height: 35px !important; width: 35px !important; }
+            .navbar-text-main { font-size: 0.9rem; }
+            .navbar-text-sub { font-size: 0.65rem; }
+            
+            /* Padding Bawah agar tidak tertutup Navigasi */
+            body.user-logged-in { padding-bottom: 70px; }
+            
+            /* Sembunyikan Tombol Tambah di Header Card (Ganti FAB) */
+            .btn-header { display: none !important; }
+            
+            /* Search Bar Full Width */
+            .card-header .d-flex { width: 100%; }
+            .search-input { width: 100%; min-width: 0; }
+
+            /* Dashboard Cards jadi 1 kolom */
+            .col-md-6 { width: 100%; }
+        }	
+		
+		
+		
     </style>
 </head>
 <body>
@@ -232,8 +417,11 @@
         <div class="login-container">
             <div class="login-brand-side">
                 
-                <div class="mb-4">
-                    <i class="fas fa-school fa-5x text-white" style="filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));"></i>
+				<div class="mb-4">
+                    <img src="https://lh3.googleusercontent.com/pw/AP1GczNA4PijRUX5Bw-6giRA1ydlqc1ktHLiw4SIVNx3w99n9VS_TcN7d6hmxABub1wZG7koKp_L5guKocg0NB3QJRIDZrVrWuhiZrtSREs4i0_g5L8LRBoQqAO7g5wpbKlf2w83Eb3KfgIioMWY6JDfU_OI=w436-h437-s-no-gm?authuser=0" 
+                         alt="Logo Sekolah" 
+                         class="rounded-circle shadow" 
+                         style="width: 120px; height: 120px; object-fit: cover; border: 4px solid rgba(255,255,255,0.2);">
                 </div>
                 
                 <div class="brand-title">AGENDA SURAT DIGITAL</div>
@@ -273,8 +461,11 @@
         <header class="app-header">
             <nav class="navbar navbar-expand-lg navbar-main">
                 <div class="container">
-                    <a class="navbar-brand d-flex align-items-center" href="#">
-                        <i class="fas fa-graduation-cap fa-2x text-white me-2"></i>
+					<a class="navbar-brand d-flex align-items-center" href="#">
+                        <img src="https://lh3.googleusercontent.com/pw/AP1GczNA4PijRUX5Bw-6giRA1ydlqc1ktHLiw4SIVNx3w99n9VS_TcN7d6hmxABub1wZG7koKp_L5guKocg0NB3QJRIDZrVrWuhiZrtSREs4i0_g5L8LRBoQqAO7g5wpbKlf2w83Eb3KfgIioMWY6JDfU_OI=w436-h437-s-no-gm?authuser=0" 
+                             alt="Logo" 
+                             class="rounded-circle me-2" 
+                             style="height: 45px; width: 45px; border: 2px solid white;">
                         <div>
                             <div class="navbar-text-main">AGENDA SURAT DIGITAL</div>
                             <div class="navbar-text-sub">SDN ...............</div>
@@ -331,28 +522,80 @@
                 </div>
             </div>
 
-            <div id="tab-dashboard" class="content-tab">
-                <div class="row g-4">
-                    <div class="col-md-6">
+			<div id="tab-dashboard" class="content-tab">
+                <div class="row g-4 mb-4">
+                    <div class="col-md-6 col-lg-6">
                         <div class="card stat-card bg-gradient-masuk h-100 p-4 shadow-soft">
                             <div class="position-relative z-1">
                                 <h6 class="text-white-50 text-uppercase fw-bold letter-spacing-1">Surat Masuk</h6>
-                                <h1 id="countMasuk" class="display-3 fw-bold mb-0">0</h1>
-                                <p class="text-white-50 mb-0 mt-2"><i class="fas fa-folder-open me-1"></i> Total Diterima</p>
+                                <div class="d-flex align-items-end gap-3">
+                                    <h1 id="countMasuk" class="display-4 fw-bold mb-0">0</h1>
+                                    <span class="mb-2 badge bg-white text-primary bg-opacity-75"><i class="fas fa-arrow-down"></i> Total</span>
+                                </div>
                             </div>
                             <i class="fas fa-envelope-open-text stat-icon"></i>
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-6 col-lg-6">
                         <div class="card stat-card bg-gradient-keluar h-100 p-4 shadow-soft">
                             <div class="position-relative z-1">
                                 <h6 class="text-white-50 text-uppercase fw-bold letter-spacing-1">Surat Keluar</h6>
-                                <h1 id="countKeluar" class="display-3 fw-bold mb-0">0</h1>
-                                <p class="text-white-50 mb-0 mt-2"><i class="fas fa-paper-plane me-1"></i> Total Terbit</p>
+                                <div class="d-flex align-items-end gap-3">
+                                    <h1 id="countKeluar" class="display-4 fw-bold mb-0">0</h1>
+                                    <span class="mb-2 badge bg-white text-danger bg-opacity-75"><i class="fas fa-arrow-up"></i> Total</span>
+                                </div>
                             </div>
                             <i class="fas fa-paper-plane stat-icon"></i>
                         </div>
                     </div>
+                </div>
+
+                <div class="row g-4 mb-4">
+                    <div class="col-lg-8">
+                        <div class="card card-custom shadow-sm h-100">
+                            <div class="card-header bg-white border-bottom p-3">
+                                <h6 class="fw-bold m-0 text-dark"><i class="fas fa-chart-bar me-2 text-primary"></i>Tren Surat Tahun Ini</h6>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="chartTrend" style="max-height: 300px;"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="card card-custom shadow-sm h-100">
+                            <div class="card-header bg-white border-bottom p-3">
+                                <h6 class="fw-bold m-0 text-dark"><i class="fas fa-chart-pie me-2 text-warning"></i>Jenis Surat Terbanyak</h6>
+                            </div>
+                            <div class="card-body d-flex align-items-center justify-content-center">
+                                <canvas id="chartJenis" style="max-height: 250px;"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card card-custom shadow-sm">
+                    <div class="card-header bg-white border-bottom p-3 d-flex justify-content-between align-items-center">
+                        <h6 class="fw-bold m-0 text-dark"><i class="fas fa-history me-2 text-muted"></i>5 Aktivitas Terakhir</h6>
+                        <small class="text-muted">Gabungan Masuk & Keluar</small>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-custom table-hover mb-0 align-middle">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th>Tanggal</th>
+                                    <th>Kategori</th>
+                                    <th>Nomor Surat</th>
+                                    <th>Perihal</th>
+                                    <th>Penginput</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tblRecentActivity">
+                                </tbody>
+                        </table>
+                    </div>
+					
+					<div class="mobile-list-container d-md-none" id="mobileListDashboard"></div>
+					
                 </div>
             </div>
 
@@ -387,6 +630,7 @@
                             <tbody></tbody>
                         </table>
                     </div>
+					<div class="mobile-list-container d-md-none" id="mobileListMasuk"></div>
                     <div class="pagination-container" id="paginationMasuk"></div>
                 </div>
             </div>
@@ -422,7 +666,8 @@
                             <tbody></tbody>
                         </table>
                     </div>
-                    <div class="pagination-container" id="paginationKeluar"></div>
+					<div class="mobile-list-container d-md-none" id="mobileListKeluar"></div>
+					<div class="pagination-container" id="paginationKeluar"></div>
                 </div>
             </div>
 
@@ -725,14 +970,30 @@
             document.getElementById('previewNoSurat').innerText = `${k}/${n}/${kl}/${t}`;
         }
 
-        window.addEventListener('load', function() {
+		window.addEventListener('load', function() {
             showLoading(false);
             setupDragAndDrop();
+            
+            // --- KODE LAMA ---
             const ids = ['inpKode', 'inpNoUrut', 'inpKodeLanjutan', 'inpTahun'];
             ids.forEach(id => {
                 const el = document.getElementById(id);
                 if(el) el.addEventListener('input', updatePreviewNomor);
             });
+            // -----------------
+
+            // --- TAMBAHAN BARU: AUTO FORMAT 3 DIGIT (001) ---
+            const inpNoUrut = document.getElementById('inpNoUrut');
+            if (inpNoUrut) {
+                inpNoUrut.addEventListener('blur', function() {
+                    // Jika ada isi, angka valid, dan panjang < 3
+                    if (this.value && !isNaN(this.value) && this.value.length < 3) {
+                        this.value = this.value.padStart(3, '0');
+                        updatePreviewNomor(); // Update preview otomatis
+                    }
+                });
+            }
+            // -----------------------------------------------
         });
 
         document.getElementById('formLogin').addEventListener('submit', function(e) {
@@ -756,6 +1017,10 @@
         });
 
         function initApp() {
+			// --- TAMBAHAN BARU: TANDAI BODY SUDAH LOGIN ---
+            document.body.classList.add('user-logged-in'); 
+            // -----------------------------------------------		
+		
             document.getElementById('loginPanel').classList.add('d-none');
             document.getElementById('appPanel').classList.remove('d-none');
             document.getElementById('userNama').innerText = currentUser.nama;
@@ -1005,26 +1270,168 @@
             });
         }
 
-        function showTab(tabName) {
+		function showTab(tabName) {
+            // Logic Desktop Lama
             document.querySelectorAll('.content-tab').forEach(el => el.classList.add('d-none'));
             document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
             document.getElementById('tab-' + tabName).classList.remove('d-none');
-            document.getElementById('nav-' + tabName).classList.add('active');
             
+            const navDesktop = document.getElementById('nav-' + tabName);
+            if(navDesktop) navDesktop.classList.add('active');
+            
+            // --- LOGIC MOBILE BARU ---
+            document.querySelectorAll('.bottom-nav-item').forEach(el => el.classList.remove('active'));
+            const navMobile = document.getElementById('mob-' + tabName);
+            if(navMobile) navMobile.classList.add('active');
+
+            // Atur FAB (Hanya muncul di Surat Masuk/Keluar)
+            const fab = document.getElementById('fabContainer');
+            if (tabName === 'suratMasuk' || tabName === 'suratKeluar') {
+                fab.style.display = 'block';
+            } else {
+                fab.style.display = 'none';
+            }
+
+            // ... (Sisa kode showTab lama: Judul Halaman dll) ...
             const titles = {
-                'dashboard': ['Statistik Persuratan', 'Kounter jumlah surat masuk dan keluar sekolah'],
-                'suratMasuk': ['Agenda Surat Masuk', 'Dokumentasi surat yang masuk/diterima'],
-                'suratKeluar': ['Agenda Surat Keluar', 'Dokumentasi surat yang keluar/diterbitkan'],
+                'dashboard': ['Statistik Persuratan', 'Kounter jumlah surat masuk dan keluar'],
+                'suratMasuk': ['Agenda Surat Masuk', 'Dokumentasi surat yang masuk'],
+                'suratKeluar': ['Agenda Surat Keluar', 'Dokumentasi surat yang keluar'],
                 'pengaturan': ['Manajemen Sistem', 'Pengaturan user dan jenis surat']
             };
-            document.getElementById('pageTitle').innerText = titles[tabName][0];
-            document.getElementById('pageTitle').nextElementSibling.innerText = titles[tabName][1];
+            if(titles[tabName]) {
+                document.getElementById('pageTitle').innerText = titles[tabName][0];
+                document.getElementById('pageTitle').nextElementSibling.innerText = titles[tabName][1];
+            }
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        function renderDashboard() {
+        // Fungsi Klik FAB
+        function handleFabClick() {
+            // Cek tab mana yang aktif
+            if (!document.getElementById('tab-suratMasuk').classList.contains('d-none')) {
+                openModal('masuk');
+            } else if (!document.getElementById('tab-suratKeluar').classList.contains('d-none')) {
+                openModal('keluar');
+            }
+        }
+
+		// Variabel Global untuk Chart agar bisa di-update
+        let chartTrendInstance = null;
+        let chartJenisInstance = null;
+
+		function renderDashboard() {
+            // 1. Update Counter Utama
             document.getElementById('countMasuk').innerText = globalData.suratMasuk.length;
             document.getElementById('countKeluar').innerText = globalData.suratKeluar.length;
+
+            // 2. Persiapan Data Grafik
+            const bulanLabels = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Ags", "Sep", "Okt", "Nov", "Des"];
+            let dataMasukPerBulan = new Array(12).fill(0);
+            let dataKeluarPerBulan = new Array(12).fill(0);
+
+            globalData.suratMasuk.forEach(row => {
+                const d = new Date(row.values[1]);
+                if (!isNaN(d)) dataMasukPerBulan[d.getMonth()]++;
+            });
+
+            globalData.suratKeluar.forEach(row => {
+                const d = new Date(row.values[1]);
+                if (!isNaN(d)) dataKeluarPerBulan[d.getMonth()]++;
+            });
+
+            const ctxTrend = document.getElementById('chartTrend').getContext('2d');
+            if (chartTrendInstance) chartTrendInstance.destroy();
+
+            chartTrendInstance = new Chart(ctxTrend, {
+                type: 'bar',
+                data: {
+                    labels: bulanLabels,
+                    datasets: [
+                        { label: 'Surat Masuk', data: dataMasukPerBulan, backgroundColor: 'rgba(2, 132, 199, 0.7)', borderColor: '#0284c7', borderWidth: 1, borderRadius: 4 },
+                        { label: 'Surat Keluar', data: dataKeluarPerBulan, backgroundColor: 'rgba(234, 88, 12, 0.7)', borderColor: '#ea580c', borderWidth: 1, borderRadius: 4 }
+                    ]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } }, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } }
+            });
+
+            let jenisCount = {};
+            globalData.suratMasuk.forEach(row => { let j = row.values[3]; jenisCount[j] = (jenisCount[j] || 0) + 1; });
+            globalData.suratKeluar.forEach(row => { let j = row.values[5]; jenisCount[j] = (jenisCount[j] || 0) + 1; });
+
+            const sortedJenis = Object.entries(jenisCount).sort((a, b) => b[1] - a[1]).slice(0, 5);
+            const jenisLabels = sortedJenis.map(i => i[0]);
+            const jenisValues = sortedJenis.map(i => i[1]);
+
+            const ctxJenis = document.getElementById('chartJenis').getContext('2d');
+            if (chartJenisInstance) chartJenisInstance.destroy();
+
+            chartJenisInstance = new Chart(ctxJenis, {
+                type: 'doughnut',
+                data: {
+                    labels: jenisLabels,
+                    datasets: [{ data: jenisValues, backgroundColor: ['#0d47a1', '#1976d2', '#42a5f5', '#90caf9', '#e3f2fd'], borderWidth: 0 }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } } } }
+            });
+
+            // 3. Render Aktivitas Terakhir (Desktop Table & Mobile Cards)
+            let allActivity = [];
+            globalData.suratMasuk.forEach(row => { allActivity.push({ tgl: new Date(row.values[1]), kategori: 'Masuk', no: row.values[2], perihal: row.values[4], user: row.values[8] || '-' }); });
+            globalData.suratKeluar.forEach(row => { allActivity.push({ tgl: new Date(row.values[1]), kategori: 'Keluar', no: row.values[4], perihal: row.values[6], user: row.values[10] || '-' }); });
+
+            allActivity.sort((a, b) => b.tgl - a.tgl);
+            const recent = allActivity.slice(0, 5);
+
+            // A. Render Tabel Desktop
+            const tbodyRecent = document.getElementById('tblRecentActivity');
+            tbodyRecent.innerHTML = '';
+            
+            // B. Render Kartu Mobile Dashboard (BARU)
+            const mobileDashboard = document.getElementById('mobileListDashboard');
+            if (mobileDashboard) mobileDashboard.innerHTML = '';
+
+            if(recent.length === 0) {
+                 tbodyRecent.innerHTML = '<tr><td colspan="5" class="text-center text-muted py-3">Belum ada aktivitas.</td></tr>';
+                 if (mobileDashboard) mobileDashboard.innerHTML = '<div class="text-center py-3 text-muted small">Belum ada aktivitas.</div>';
+            } else {
+                recent.forEach(item => {
+                    // HTML untuk Desktop
+                    const badge = item.kategori === 'Masuk' ? '<span class="badge bg-primary bg-opacity-10 text-primary">Masuk</span>' : '<span class="badge bg-warning bg-opacity-10 text-warning">Keluar</span>';
+                    const tglStr = item.tgl.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
+                    
+                    tbodyRecent.innerHTML += `
+                        <tr>
+                            <td class="small fw-bold text-muted">${tglStr}</td>
+                            <td>${badge}</td>
+                            <td class="small fw-bold text-dark">${item.no}</td>
+                            <td class="small text-truncate" style="max-width: 150px;">${item.perihal}</td>
+                            <td class="small text-muted"><i class="fas fa-user-circle me-1"></i>${item.user}</td>
+                        </tr>
+                    `;
+
+                    // HTML untuk Mobile Dashboard (Versi Ringkas)
+                    if (mobileDashboard) {
+                        const borderClass = item.kategori === 'Masuk' ? 'border-primary' : 'border-warning';
+                        const textClass = item.kategori === 'Masuk' ? 'text-primary' : 'text-warning';
+                        const icon = item.kategori === 'Masuk' ? 'fa-arrow-down' : 'fa-arrow-up';
+                        
+                        mobileDashboard.innerHTML += `
+                            <div class="bg-white p-3 mb-2 rounded shadow-sm border-start border-4 ${borderClass}">
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span class="small fw-bold ${textClass}"><i class="fas ${icon} me-1"></i> ${item.kategori}</span>
+                                    <span class="small text-muted">${tglStr}</span>
+                                </div>
+                                <div class="fw-bold text-dark small text-truncate">${item.no}</div>
+                                <div class="small text-muted text-truncate mb-2">${item.perihal}</div>
+                                <div class="d-flex align-items-center small text-muted border-top pt-2 mt-1">
+                                    <i class="fas fa-user-circle me-2"></i> ${item.user}
+                                </div>
+                            </div>
+                        `;
+                    }
+                });
+            }
         }
 
         function changeRowsPerPage(type, value) {
@@ -1040,46 +1447,108 @@
 
         function resetPagination(type) { if(type === 'masuk') currentPageMasuk = 1; else currentPageKeluar = 1; }
 
-        function renderPaginationControls(totalItems, currentPage, rowsPerPage, type, containerId) {
+		function renderPaginationControls(totalItems, currentPage, rowsPerPage, type, containerId) {
             const container = document.getElementById(containerId);
             if (!container) return;
+            
             const totalPages = Math.ceil(totalItems / rowsPerPage);
             const startItem = totalItems === 0 ? 0 : (currentPage - 1) * rowsPerPage + 1;
             const endItem = Math.min(currentPage * rowsPerPage, totalItems);
 
-            let controls = `<div class="rows-per-page d-flex align-items-center">Tampil <select class="mx-2 shadow-sm" onchange="changeRowsPerPage('${type}', this.value)">
-                        <option value="5" ${rowsPerPage === 5 ? 'selected' : ''}>5</option>
-                        <option value="10" ${rowsPerPage === 10 ? 'selected' : ''}>10</option>
-                        <option value="25" ${rowsPerPage === 25 ? 'selected' : ''}>25</option>
-                        <option value="all" ${rowsPerPage > 50 ? 'selected' : ''}>Semua</option>
-                    </select> baris</div><div class="d-flex align-items-center"><span class="me-3 small text-muted">Tampil ${startItem}-${endItem} dari ${totalItems} data</span><nav><ul class="pagination pagination-sm mb-0 shadow-sm">
-                    <li class="page-item ${currentPage === 1 ? 'disabled' : ''}"><button class="page-link" onclick="changePage('${type}', ${currentPage - 1})"><i class="fas fa-chevron-left"></i></button></li>`;
+            // Kita bagi menjadi 2 Blok: Kiri (Dropdown) dan Kanan (Info + Tombol)
+            
+            // 1. Tombol Previous
+            let buttonsHtml = `<li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+                                <button class="page-link" onclick="changePage('${type}', ${currentPage - 1})">
+                                    <i class="fas fa-chevron-left"></i>
+                                </button>
+                               </li>`;
 
+            // 2. Generate Nomor Halaman (Logic Smart Pagination)
             for (let i = 1; i <= totalPages; i++) {
-                if(totalPages <= 7 || i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
-                    controls += `<li class="page-item ${i === currentPage ? 'active' : ''}"><button class="page-link" onclick="changePage('${type}', ${i})">${i}</button></li>`;
-                } else if (i === currentPage - 2 || i === currentPage + 2) controls += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
+                if(totalPages <= 5 || i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
+                    buttonsHtml += `<li class="page-item ${i === currentPage ? 'active' : ''}">
+                                        <button class="page-link" onclick="changePage('${type}', ${i})">${i}</button>
+                                    </li>`;
+                } else if (i === currentPage - 2 || i === currentPage + 2) {
+                    buttonsHtml += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
+                }
             }
-            controls += `<li class="page-item ${currentPage === totalPages || totalPages === 0 ? 'disabled' : ''}"><button class="page-link" onclick="changePage('${type}', ${currentPage + 1})"><i class="fas fa-chevron-right"></i></button></li></ul></nav></div>`;
-            container.innerHTML = controls;
+
+            // 3. Tombol Next
+            buttonsHtml += `<li class="page-item ${currentPage === totalPages || totalPages === 0 ? 'disabled' : ''}">
+                                <button class="page-link" onclick="changePage('${type}', ${currentPage + 1})">
+                                    <i class="fas fa-chevron-right"></i>
+                                </button>
+                            </li>`;
+
+            // 4. SUSUN HTML AKHIR YANG RAPI
+            // Perhatikan class 'pagination-wrapper', 'pagination-left', dll yang kita buat di CSS
+            const html = `
+                <div class="pagination-wrapper">
+                    <div class="pagination-left rows-per-page">
+                        <span>Tampil</span>
+                        <select onchange="changeRowsPerPage('${type}', this.value)">
+                            <option value="5" ${rowsPerPage === 5 ? 'selected' : ''}>5</option>
+                            <option value="10" ${rowsPerPage === 10 ? 'selected' : ''}>10</option>
+                            <option value="25" ${rowsPerPage === 25 ? 'selected' : ''}>25</option>
+                            <option value="all" ${rowsPerPage > 50 ? 'selected' : ''}>Semua</option>
+                        </select>
+                        <span>baris</span>
+                    </div>
+
+                    <div class="pagination-right">
+                        <div class="pagination-info">
+                            ${startItem}-${endItem} dari ${totalItems} data
+                        </div>
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination pagination-sm mb-0 shadow-sm">
+                                ${buttonsHtml}
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            `;
+            
+            container.innerHTML = html;
         }
 
-        function renderTables() {
+		function renderTables() {
             const termMasuk = document.getElementById('searchMasuk') ? document.getElementById('searchMasuk').value.toLowerCase() : '';
             const termKeluar = document.getElementById('searchKeluar') ? document.getElementById('searchKeluar').value.toLowerCase() : '';
 
-            const filteredMasuk = globalData.suratMasuk.filter(row => (row.values[3] + " " + row.values[4] + " " + row.values[5]).toLowerCase().includes(termMasuk));
-            const filteredKeluar = globalData.suratKeluar.filter(row => (row.values[3] + " " + row.values[4] + " " + row.values[7]).toLowerCase().includes(termKeluar));
+            // --- OPTIMASI PENCARIAN ---
+
+            // SURAT MASUK
+            // Target: Nomor(2), Jenis(3), Perihal(4), Asal(5)
+            const filteredMasuk = globalData.suratMasuk.filter(row => {
+                const v = row.values;
+                // Kita gabung data jadi satu string kecil agar pencarian mencakup semuanya
+                const str = (v[2] + " " + v[3] + " " + v[4] + " " + v[5]).toLowerCase();
+                return str.includes(termMasuk);
+            });
+
+            // SURAT KELUAR (PERBAIKAN INDEKS KOLOM)
+            // Target: No.Lengkap(4), Jenis(5), Perihal(6), Tujuan(7)
+            const filteredKeluar = globalData.suratKeluar.filter(row => {
+                const v = row.values;
+                // Sebelumnya indexnya kurang tepat, sekarang sudah diarahkan ke Jenis & Perihal
+                const str = (v[4] + " " + v[5] + " " + v[6] + " " + v[7]).toLowerCase();
+                return str.includes(termKeluar);
+            });
+
+            // --- LOGIKA PAGINATION (TETAP) ---
 
             const paginatedMasuk = filteredMasuk.slice((currentPageMasuk - 1) * rowsPerPageMasuk, (currentPageMasuk - 1) * rowsPerPageMasuk + rowsPerPageMasuk);
             const paginatedKeluar = filteredKeluar.slice((currentPageKeluar - 1) * rowsPerPageKeluar, (currentPageKeluar - 1) * rowsPerPageKeluar + rowsPerPageKeluar);
 
+            // --- HELPER RENDER BARIS ---
+            
 			const createRow = (rowObj, type) => {
 				const row = rowObj.values;
 				const realRow = rowObj.rowNumber;
-				const idxUrl = type === 'masuk' ? 7 : 9;
+				const idxUrl = type === 'masuk' ? 7 : 9; // Index URL File
 				
-				// LOGIKA BARU (PREVIEW MODAL):
 				let btnFile = row[idxUrl] ? 
 					`<button class="btn-circle btn-circle-primary" onclick="openFilePreview('${row[idxUrl]}')" title="Preview File">
 						<i class="fas fa-eye"></i>
@@ -1090,6 +1559,8 @@
 				const badgeClass = type === 'masuk' ? 'badge-masuk' : 'badge-keluar';
 
 				if (type === 'masuk') {
+                    // TAMPILAN SURAT MASUK
+                    // Kolom: No Surat, Jenis & Perihal, Asal, Ket
 					return `<tr>
 							<td><div class="fw-bold text-dark small">${row[2]}</div><small class="text-muted" style="font-size: 0.75rem;"><i class="far fa-calendar-alt me-1 text-primary"></i> ${tgl}</small></td>
 							<td><span class="badge ${badgeClass} mb-1">${row[3]}</span><div class="small text-dark text-wrap">${row[4]}</div></td>
@@ -1098,6 +1569,8 @@
 							<td class="text-center"><div class="d-flex justify-content-center gap-2">${btnFile}<button class="btn-circle btn-circle-warning" onclick="editData('${type}', ${realRow})" title="Edit Data"><i class="fas fa-pen"></i></button><button class="btn-circle btn-circle-danger" onclick="hapusData('${type}', ${realRow})" title="Hapus Data"><i class="fas fa-trash-alt"></i></button></div></td>
 						</tr>`;
 				} else {
+                    // TAMPILAN SURAT KELUAR
+                    // Kolom: No Lengkap, Jenis & Perihal, Tujuan, Ket
 					return `<tr>
 							<td><div class="fw-bold text-dark small">${row[4]}</div> <small class="text-muted" style="font-size: 0.75rem;"><i class="far fa-calendar-alt me-1 text-warning"></i> ${tgl}</small></td>
 							<td><span class="badge ${badgeClass} mb-1">${row[5]}</span><div class="small text-dark text-wrap">${row[6]}</div></td>
@@ -1108,15 +1581,79 @@
 				}
 			};
 
+            // --- RENDER KE TABEL HTML ---
+
             const tbodyMasuk = document.querySelector('#tableMasuk tbody'); tbodyMasuk.innerHTML = '';
-            if (paginatedMasuk.length === 0) tbodyMasuk.innerHTML = '<tr><td colspan="5" class="text-center py-5 text-muted"><div class="p-4 bg-light rounded d-inline-block border"><i class="fas fa-folder-open fa-3x mb-3 text-secondary"></i><p class="mb-0">Belum ada data.</p></div></td></tr>';
+            if (paginatedMasuk.length === 0) tbodyMasuk.innerHTML = '<tr><td colspan="5" class="text-center py-5 text-muted"><div class="p-4 bg-light rounded d-inline-block border"><i class="fas fa-folder-open fa-3x mb-3 text-secondary"></i><p class="mb-0">Data tidak ditemukan.</p></div></td></tr>';
             else paginatedMasuk.forEach(rowObj => tbodyMasuk.innerHTML += createRow(rowObj, 'masuk'));
             renderPaginationControls(filteredMasuk.length, currentPageMasuk, rowsPerPageMasuk, 'masuk', 'paginationMasuk');
 
             const tbodyKeluar = document.querySelector('#tableKeluar tbody'); tbodyKeluar.innerHTML = '';
-            if (paginatedKeluar.length === 0) tbodyKeluar.innerHTML = '<tr><td colspan="5" class="text-center py-5 text-muted"><div class="p-4 bg-light rounded d-inline-block border"><i class="fas fa-folder-open fa-3x mb-3 text-secondary"></i><p class="mb-0">Belum ada data.</p></div></td></tr>';
+            if (paginatedKeluar.length === 0) tbodyKeluar.innerHTML = '<tr><td colspan="5" class="text-center py-5 text-muted"><div class="p-4 bg-light rounded d-inline-block border"><i class="fas fa-folder-open fa-3x mb-3 text-secondary"></i><p class="mb-0">Data tidak ditemukan.</p></div></td></tr>';
             else paginatedKeluar.forEach(rowObj => tbodyKeluar.innerHTML += createRow(rowObj, 'keluar'));
             renderPaginationControls(filteredKeluar.length, currentPageKeluar, rowsPerPageKeluar, 'keluar', 'paginationKeluar');
+       
+			// --- TAMBAHAN BARU: RENDER MOBILE CARDS ---
+            renderMobileCards(paginatedMasuk, 'masuk');
+            renderMobileCards(paginatedKeluar, 'keluar');
+        }
+
+        function renderMobileCards(data, type) {
+            const container = document.getElementById(type === 'masuk' ? 'mobileListMasuk' : 'mobileListKeluar');
+            if (!container) return; // Safety check
+            
+            container.innerHTML = '';
+            
+            if (data.length === 0) {
+                container.innerHTML = '<div class="text-center py-5 text-muted"><i class="fas fa-box-open fa-3x mb-2"></i><p>Data tidak ditemukan</p></div>';
+                return;
+            }
+
+            data.forEach(rowObj => {
+                const row = rowObj.values;
+                const realRow = rowObj.rowNumber;
+                const tgl = new Date(row[1]).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: '2-digit' });
+                const idxUrl = type === 'masuk' ? 7 : 9;
+                const hasFile = !!row[idxUrl];
+                
+                // Variabel Data
+                let noSurat, perihal, subInfo;
+                if (type === 'masuk') {
+                    noSurat = row[2];
+                    perihal = row[4]; // Index 4: Perihal
+                    subInfo = `<i class="fas fa-building me-1"></i> ${row[5]}`; // Asal
+                } else {
+                    noSurat = row[4]; // No Lengkap
+                    perihal = row[6]; // Index 6: Perihal
+                    subInfo = `<i class="fas fa-paper-plane me-1"></i> Ke: ${row[7]}`; // Tujuan
+                }
+                
+                // Tombol File
+                let btnFileHtml = hasFile ? 
+                    `<button class="btn btn-sm btn-outline-primary rounded-pill px-3" onclick="openFilePreview('${row[idxUrl]}')"><i class="fas fa-eye me-1"></i> Lihat</button>` :
+                    `<span class="text-muted small"><i class="fas fa-times-circle"></i> No File</span>`;
+
+                const cardHtml = `
+                    <div class="mobile-card ${type}">
+                        <div class="m-card-header">
+                            <div class="m-card-no">${noSurat}</div>
+                            <div class="m-card-date"><i class="far fa-calendar-alt"></i> ${tgl}</div>
+                        </div>
+                        <div class="m-card-body">
+                            <div class="fw-bold text-dark mb-1">${perihal}</div>
+                            <div class="text-muted small">${subInfo}</div>
+                        </div>
+                        <div class="m-card-footer">
+                            <div>${btnFileHtml}</div>
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-sm btn-light text-warning border" onclick="editData('${type}', ${realRow})"><i class="fas fa-pen"></i></button>
+                                <button class="btn btn-sm btn-light text-danger border" onclick="hapusData('${type}', ${realRow})"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += cardHtml;
+            });
         }
 
         function populateDropdown() {
@@ -1282,38 +1819,105 @@
             });
         }
 
-		function simpanData() {
-			const fileInput = document.getElementById('inpFile'); const kategori = document.getElementById('kategoriSurat').value; const isEdit = document.getElementById('isEditMode').value === "true";
-			
-			const payload = { action: isEdit ? 'updateSurat' : 'simpanSurat', kategori: kategori, rowNumber: document.getElementById('realRowNumber').value, tanggalSurat: document.getElementById('inpTanggal').value, jenisSurat: document.getElementById('inpJenis').value, perihal: document.getElementById('inpPerihal').value, keterangan: document.getElementById('inpKeterangan').value, existingFile: document.getElementById('existingFileUrl').value, username: currentUser.username, fileName: "", fileMime: "", fileData: "" };
+function simpanData() {
+            const fileInput = document.getElementById('inpFile'); 
+            const kategori = document.getElementById('kategoriSurat').value; 
+            const isEdit = document.getElementById('isEditMode').value === "true";
+            const currentRealRow = parseInt(document.getElementById('realRowNumber').value);
+            
+            // Siapkan Payload Awal
+            const payload = { 
+                action: isEdit ? 'updateSurat' : 'simpanSurat', 
+                kategori: kategori, 
+                rowNumber: currentRealRow, 
+                tanggalSurat: document.getElementById('inpTanggal').value, 
+                jenisSurat: document.getElementById('inpJenis').value, 
+                perihal: document.getElementById('inpPerihal').value, 
+                keterangan: document.getElementById('inpKeterangan').value, 
+                existingFile: document.getElementById('existingFileUrl').value, 
+                username: currentUser.username, 
+                fileName: "", 
+                fileMime: "", 
+                fileData: "" 
+            };
 
-			let emptyFields = [];
-			if (!payload.tanggalSurat) emptyFields.push("Tanggal Surat"); if (!payload.jenisSurat) emptyFields.push("Kategori Surat"); if (!payload.perihal) emptyFields.push("Perihal / Deskripsi");
+            let emptyFields = [];
+            if (!payload.tanggalSurat) emptyFields.push("Tanggal Surat"); 
+            if (!payload.jenisSurat) emptyFields.push("Kategori Surat"); 
+            if (!payload.perihal) emptyFields.push("Perihal / Deskripsi");
 
-			if (kategori === 'surat_masuk') {
-				payload.nomorSurat = document.getElementById('inpNomorMasuk').value; payload.asal = document.getElementById('inpPengirim').value;
-				if (!payload.nomorSurat) emptyFields.push("Nomor Surat"); if (!payload.asal) emptyFields.push("Asal Instansi");
-			} else {
-				const k = document.getElementById('inpKode').value; const n = document.getElementById('inpNoUrut').value; const kl = document.getElementById('inpKodeLanjutan').value; const t = document.getElementById('inpTahun').value;
-				payload.kodeKlasifikasi = k; payload.noUrut = n; payload.noLengkap = `${k}/${n}/${kl}/${t}`; payload.tujuan = document.getElementById('inpTujuan').value;
-				if (!k) emptyFields.push("Kode Klasifikasi"); if (!n) emptyFields.push("Nomor Urut"); if (!payload.tujuan) emptyFields.push("Penerima/Tujuan");
-			}
+            // --- VALIDASI SPESIFIK & PENGECEKAN DUPLIKASI LOKAL ---
+            if (kategori === 'surat_masuk') {
+                payload.nomorSurat = document.getElementById('inpNomorMasuk').value; 
+                payload.asal = document.getElementById('inpPengirim').value;
+                if (!payload.nomorSurat) emptyFields.push("Nomor Surat"); 
+                if (!payload.asal) emptyFields.push("Asal Instansi");
+            } else {
+                // SURAT KELUAR
+                const k = document.getElementById('inpKode').value; 
+                const n = document.getElementById('inpNoUrut').value; 
+                const kl = document.getElementById('inpKodeLanjutan').value; 
+                const t = document.getElementById('inpTahun').value;
+                
+                payload.kodeKlasifikasi = k; 
+                payload.noUrut = n; 
+                payload.tahun = t;
+                payload.noLengkap = `${k}/${n}/${kl}/${t}`; 
+                payload.tujuan = document.getElementById('inpTujuan').value;
+                
+                if (!k) emptyFields.push("Kode Klasifikasi"); 
+                if (!n) emptyFields.push("Nomor Urut"); 
+                if (!payload.tujuan) emptyFields.push("Penerima/Tujuan");
 
-			if (emptyFields.length > 0) return Swal.fire({ icon: 'warning', title: 'Data Belum Lengkap', html: `Harap lengkapi isian berikut:<br/><b class="text-danger">${emptyFields.join(', ')}</b>` });
+                // === LOGIKA BARU: CEK DUPLIKASI DI SINI (CLIENT SIDE) ===
+                if (n && t) {
+                    const inputNo = parseInt(n);
+                    const inputTahun = String(t).trim();
 
-			showLoading(true); myModal.hide();
+                    // Cek di array globalData.suratKeluar
+                    const isDuplicate = globalData.suratKeluar.some(row => {
+                        // Jika sedang Edit, abaikan baris diri sendiri
+                        if (isEdit && row.rowNumber === currentRealRow) return false;
 
-			if (fileInput.files.length > 0) {
-				const file = fileInput.files[0];
-				
-				// UBAH BAGIAN INI (5 * 1024 * 1024 menjadi 2 * 1024 * 1024)
-                if (file.size > 2 * 1024 * 1024) {
-                    Swal.fire({
-                        icon: 'error', 
-                        title: 'File Ditolak', 
-                        text: 'Ukuran file melebihi batas 2 MB.',
-                        confirmButtonColor: '#0d47a1'
+                        const existingValues = row.values;
+                        const exNoUrut = parseInt(existingValues[3]); // Index 3: No Urut
+                        
+                        // Ambil tahun dari No Lengkap (Index 4)
+                        const exNoLengkap = String(existingValues[4]);
+                        const parts = exNoLengkap.split('/');
+                        const exTahun = parts.length > 0 ? parts[parts.length - 1].trim() : "";
+
+                        // Bandingkan
+                        return exNoUrut === inputNo && exTahun === inputTahun;
                     });
+
+                    if (isDuplicate) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Nomor Sudah Terpakai!',
+                            html: `Nomor <b>${n}</b> sudah terdaftar dalam database.<br>Silakan ganti nomor urutnya.`,
+                            confirmButtonText: 'Ganti Nomor',
+                            confirmButtonColor: '#d33'
+                        }).then(() => {
+                            // Fokuskan kursor kembali ke input Nomor Urut
+                            setTimeout(() => document.getElementById('inpNoUrut').focus(), 300);
+                        });
+                        return; // BERHENTI DI SINI, JANGAN LANJUT SIMPAN
+                    }
+                }
+                // ========================================================
+            }
+
+            if (emptyFields.length > 0) return Swal.fire({ icon: 'warning', title: 'Data Belum Lengkap', html: `Harap lengkapi isian berikut:<br/><b class="text-danger">${emptyFields.join(', ')}</b>` });
+
+            // JIKA LOLOS SEMUA VALIDASI, BARU TUTUP MODAL DAN KIRIM
+            showLoading(true); 
+            myModal.hide();
+
+            if (fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                if (file.size > 2 * 1024 * 1024) {
+                    Swal.fire({ icon: 'error', title: 'File Ditolak', text: 'Ukuran file melebihi batas 2 MB.', confirmButtonColor: '#0d47a1' });
                     showLoading(false); 
                     return;
                 }
@@ -1325,8 +1929,8 @@
                     payload.fileData = e.target.result.split(',')[1];
                     kirimKeGAS(payload);
                 };
-				reader.readAsDataURL(file);
-			} else kirimKeGAS(payload);
+                reader.readAsDataURL(file);
+            } else kirimKeGAS(payload);
         }
 
 		function kirimKeGAS(payload) {
@@ -1545,14 +2149,54 @@
 
         function showLoading(show) { const el = document.getElementById('loading'); if (show) el.classList.remove('d-none'); else el.classList.add('d-none'); }
 
-        function logout() {
-            Swal.fire({ title: 'Akhiri Sesi?', text: "Anda akan keluar dari sistem.", icon: 'question', showCancelButton: true, confirmButtonText: 'Keluar', cancelButtonText: 'Batal', reverseButtons: true, confirmButtonColor: '#0d47a1' }).then((result) => {
-                if (result.isConfirmed) { currentUser = null; document.getElementById('appPanel').classList.add('d-none'); document.getElementById('loginPanel').classList.remove('d-none'); document.getElementById('formLogin').reset(); }
+		function logout() {
+            Swal.fire({ 
+                title: 'Akhiri Sesi?', 
+                text: "Anda akan keluar dari sistem.", 
+                icon: 'question', 
+                showCancelButton: true, 
+                confirmButtonText: 'Keluar', 
+                cancelButtonText: 'Batal', 
+                reverseButtons: true, 
+                confirmButtonColor: '#0d47a1' 
+            }).then((result) => {
+                if (result.isConfirmed) { 
+                    currentUser = null; 
+                    
+                    // --- TAMBAHAN BARU: BERSIHKAN TAMPILAN MOBILE ---
+                    document.body.classList.remove('user-logged-in'); // Sembunyikan Nav Bawah
+                    document.getElementById('fabContainer').style.display = 'none'; // Sembunyikan FAB
+                    // ------------------------------------------------
+                    
+                    document.getElementById('appPanel').classList.add('d-none'); 
+                    document.getElementById('loginPanel').classList.remove('d-none'); 
+                    document.getElementById('formLogin').reset(); 
+                }
             });
         }
     </script>
+	
+	<div class="bottom-nav">
+        <a href="#" class="bottom-nav-item active" onclick="showTab('dashboard')" id="mob-dashboard">
+            <i class="fas fa-home"></i> Home
+        </a>
+        <a href="#" class="bottom-nav-item" onclick="showTab('suratMasuk')" id="mob-suratMasuk">
+            <i class="fas fa-inbox"></i> Masuk
+        </a>
+        <a href="#" class="bottom-nav-item" onclick="showTab('suratKeluar')" id="mob-suratKeluar">
+            <i class="fas fa-paper-plane"></i> Keluar
+        </a>
+        <a href="#" class="bottom-nav-item" onclick="showTab('pengaturan')" id="mob-pengaturan">
+            <i class="fas fa-cog"></i> Akun
+        </a>
+    </div>
+
+    <div class="fab-container" id="fabContainer">
+        <button class="btn-fab" onclick="handleFabClick()">
+            <i class="fas fa-plus"></i>
+        </button>
+    </div>	
+	
 </body>
 
 </html>
-
-
