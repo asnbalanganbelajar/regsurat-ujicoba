@@ -401,7 +401,37 @@
             }
         }
 
-		/* --- FIX: SEMBUNYIKAN FAB DI DESKTOP --- */
+        /* --- KUSTOMISASI PESAN NON-ADMIN --- */
+        .non-admin-card { padding: 3rem; }
+        .lock-icon { font-size: 4rem; }
+        
+        @media (max-width: 576px) {
+            .non-admin-card { 
+                padding: 1.5rem !important; 
+                margin-top: 1rem !important; 
+            }
+            .lock-icon { 
+                font-size: 2.5rem; 
+                margin-bottom: 1rem !important; 
+            }
+            .title-dibatasi { 
+                font-size: 1.2rem; 
+            }
+            .desc-dibatasi { 
+                font-size: 0.85rem; 
+                line-height: 1.5; 
+            }
+            .alert-pemesan { 
+                padding: 10px !important; 
+                display: block !important; 
+                margin-top: 1.5rem !important; 
+            }
+            .alert-pemesan span { 
+                font-size: 0.85rem; 
+            }
+        }
+
+        /* --- FIX: SEMBUNYIKAN FAB DI DESKTOP --- */
         /* Aturan ini memastikan FAB tetap tersembunyi di layar lebih besar dari 576px (Desktop/Tablet),
            meskipun JavaScript mencoba menampilkannya dengan display: block.
            Penggunaan !important diperlukan untuk menimpa inline style dari JS.
@@ -680,60 +710,74 @@
             </div>
 
             <div id="tab-pengaturan" class="content-tab d-none">
-                <div class="card card-custom p-4 border-start border-4 border-warning mb-4 bg-white">
-                    <div class="d-flex align-items-center">
-                        <i class="fas fa-shield-alt fa-2x text-warning me-3"></i>
-                        <div>
-                            <h5 class="fw-bold mb-1">Pengaturan Sistem</h5>
-                            <p class="text-muted mb-0 small">Manajemen pengguna dan klasifikasi jenis surat khusus Super Admin.</p>
-                        </div>
-                    </div>
-                </div>
                 
-                <div class="row">
-                    <div class="col-md-7 mb-4">
-                        <div class="card card-custom shadow-sm overflow-hidden h-100">
-                            <div class="card-header bg-white border-bottom p-3 d-flex justify-content-between align-items-center">
-                                <h6 class="fw-bold m-0 text-primary"><i class="fas fa-users-cog me-2"></i>Manajemen User</h6>
-                                <button class="btn btn-primary btn-sm rounded-pill fw-bold px-3" onclick="openUserModal()">
-                                    <i class="fas fa-user-plus me-1"></i> Tambah
-                                </button>
-                            </div>
-                            <div class="table-responsive">
-                                <table class="table table-custom mb-0" id="tableUsers">
-                                    <thead>
-                                        <tr>
-                                            <th>Username</th>
-                                            <th>Nama User</th>
-                                            <th>Role</th>
-                                            <th class="text-center">Aksi</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody></tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-5 mb-4">
-                        <div class="card card-custom shadow-sm overflow-hidden h-100">
-                            <div class="card-header bg-white border-bottom p-3 d-flex justify-content-between align-items-center">
-                                <h6 class="fw-bold m-0 text-primary"><i class="fas fa-tags me-2"></i>Jenis Surat</h6>
-                                <button class="btn btn-primary btn-sm rounded-pill fw-bold px-3" onclick="addJenisSurat()">
-                                    <i class="fas fa-plus me-1"></i> Tambah
-                                </button>
-                            </div>
-							
-							<div class="card-body bg-light">
-								<div class="alert alert-primary py-2 small mb-3 border-0 bg-white shadow-sm">
-									<i class="fas fa-hand-pointer me-2 text-primary"></i>Tahan & Geser (Drag) untuk urutan. <b>Tersimpan otomatis.</b>
-								</div>
-								<ul class="list-group shadow-sm border-0" id="listJenisSurat" style="border-radius: 8px; overflow:hidden;"></ul>
-							</div>							
-							
+                <div id="nonAdminMessage" class="d-none">
+                    <div class="card card-custom non-admin-card text-center shadow-sm mt-4 bg-white mx-2 mx-md-0">
+                        <i class="fas fa-lock lock-icon text-muted mb-4" style="opacity: 0.3;"></i>
+                        <h5 class="fw-bold text-dark mb-3 title-dibatasi">Akses Dibatasi</h5>
+                        <p class="text-muted mb-2 desc-dibatasi px-2">Fitur ini akan muncul bagi Super Admin, untuk menambahkan / mengedit / menghapus Admin dan Jenis Surat.</p>
+                        <div class="mt-4 p-3 bg-light rounded border border-primary border-opacity-25 d-inline-block alert-pemesan">
+                            <span class="text-primary fw-bold"><i class="fas fa-info-circle me-2"></i>Fitur ini akan aktif bagi pemesan.</span>
                         </div>
                     </div>
                 </div>
+
+                <div id="superAdminContent">
+                    <div class="card card-custom p-4 border-start border-4 border-warning mb-4 bg-white">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-shield-alt fa-2x text-warning me-3"></i>
+                            <div>
+                                <h5 class="fw-bold mb-1">Pengaturan Sistem</h5>
+                                <p class="text-muted mb-0 small">Manajemen pengguna dan klasifikasi jenis surat khusus Super Admin.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-7 mb-4">
+                            <div class="card card-custom shadow-sm overflow-hidden h-100">
+                                <div class="card-header bg-white border-bottom p-3 d-flex justify-content-between align-items-center">
+                                    <h6 class="fw-bold m-0 text-primary"><i class="fas fa-users-cog me-2"></i>Manajemen User</h6>
+                                    <button class="btn btn-primary btn-sm rounded-pill fw-bold px-3" onclick="openUserModal()">
+                                        <i class="fas fa-user-plus me-1"></i> Tambah
+                                    </button>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-custom mb-0" id="tableUsers">
+                                        <thead>
+                                            <tr>
+                                                <th>Username</th>
+                                                <th>Nama User</th>
+                                                <th>Role</th>
+                                                <th class="text-center">Aksi</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-5 mb-4">
+                            <div class="card card-custom shadow-sm overflow-hidden h-100">
+                                <div class="card-header bg-white border-bottom p-3 d-flex justify-content-between align-items-center">
+                                    <h6 class="fw-bold m-0 text-primary"><i class="fas fa-tags me-2"></i>Jenis Surat</h6>
+                                    <button class="btn btn-primary btn-sm rounded-pill fw-bold px-3" onclick="addJenisSurat()">
+                                        <i class="fas fa-plus me-1"></i> Tambah
+                                    </button>
+                                </div>
+                                
+                                <div class="card-body bg-light">
+                                    <div class="alert alert-primary py-2 small mb-3 border-0 bg-white shadow-sm">
+                                        <i class="fas fa-hand-pointer me-2 text-primary"></i>Tahan & Geser (Drag) untuk urutan. <b>Tersimpan otomatis.</b>
+                                    </div>
+                                    <ul class="list-group shadow-sm border-0" id="listJenisSurat" style="border-radius: 8px; overflow:hidden;"></ul>
+                                </div>							
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div> 
             </div>
         </div>
     </div>
@@ -1040,8 +1084,17 @@
             document.getElementById('appPanel').classList.remove('d-none');
             document.getElementById('userNama').innerText = currentUser.nama;
             document.getElementById('userRole').innerText = currentUser.role;
-            if (currentUser.role !== 'Super Admin') document.getElementById('menuPengaturan').classList.add('d-none');
-            else { loadUsers(); renderJenisSuratSettings(); }
+            if (currentUser.role !== 'Super Admin') {
+                // Tampilkan pesan khusus non-admin, sembunyikan fitur super admin
+                document.getElementById('superAdminContent').classList.add('d-none');
+                document.getElementById('nonAdminMessage').classList.remove('d-none');
+            } else {
+                // Tampilkan fitur super admin, sembunyikan pesan
+                document.getElementById('superAdminContent').classList.remove('d-none');
+                document.getElementById('nonAdminMessage').classList.add('d-none');
+                loadUsers(); 
+                renderJenisSuratSettings(); 
+            }
             loadData();
 
             setInterval(() => {
