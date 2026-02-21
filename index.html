@@ -1430,20 +1430,29 @@
             document.getElementById('countMasuk').innerText = globalData.suratMasuk.length;
             document.getElementById('countKeluar').innerText = globalData.suratKeluar.length;
 
-            // 2. Persiapan Data Grafik
-            const bulanLabels = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Ags", "Sep", "Okt", "Nov", "Des"];
-            let dataMasukPerBulan = new Array(12).fill(0);
-            let dataKeluarPerBulan = new Array(12).fill(0);
-
-			globalData.suratMasuk.forEach(row => {
-                const d = new Date(row.values[2]); // Index 2: Tanggal
-                if (!isNaN(d)) dataMasukPerBulan[d.getMonth()]++;
-            });
-
-            globalData.suratKeluar.forEach(row => {
-                const d = new Date(row.values[2]); // Index 2: Tanggal
-                if (!isNaN(d)) dataKeluarPerBulan[d.getMonth()]++;
-            });
+			// 2. Persiapan Data Grafik
+	        const bulanLabels = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Ags", "Sep", "Okt", "Nov", "Des"];
+	        let dataMasukPerBulan = new Array(12).fill(0);
+	        let dataKeluarPerBulan = new Array(12).fill(0);
+	
+	        // Tambahkan variabel untuk mengambil tahun saat ini
+	        const tahunBerjalan = new Date().getFullYear();
+	
+	        globalData.suratMasuk.forEach(row => {
+	            const d = new Date(row.values[2]); // Index 2: Tanggal
+	            // Tambahkan pengecekan agar hanya data tahun berjalan yang dihitung
+	            if (!isNaN(d) && d.getFullYear() === tahunBerjalan) {
+	                dataMasukPerBulan[d.getMonth()]++;
+	            }
+	        });
+	
+	        globalData.suratKeluar.forEach(row => {
+	            const d = new Date(row.values[2]); // Index 2: Tanggal
+	            // Tambahkan pengecekan agar hanya data tahun berjalan yang dihitung
+	            if (!isNaN(d) && d.getFullYear() === tahunBerjalan) {
+	                dataKeluarPerBulan[d.getMonth()]++;
+	            }
+	        });
 
             const ctxTrend = document.getElementById('chartTrend').getContext('2d');
             if (chartTrendInstance) chartTrendInstance.destroy();
@@ -2332,3 +2341,4 @@
 </body>
 
 </html>
+
