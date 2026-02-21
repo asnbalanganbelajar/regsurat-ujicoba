@@ -644,7 +644,7 @@
                         <div class="d-flex gap-2">
                             <div class="position-relative">
                                 <i class="fas fa-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted" style="font-size: 0.8rem;"></i>
-                                <input type="text" id="searchMasuk" class="form-control form-control-sm search-input shadow-sm ps-5" placeholder="Cari Surat..." onkeyup="resetPagination('masuk'); renderTables()">
+                                <input type="text" id="searchMasuk" class="form-control form-control-sm search-input shadow-sm ps-5" placeholder="Cari Surat..." onkeyup="resetPagination('masuk'); renderTables()" autocomplete="off">
                             </div>
                             <button class="btn btn-masuk btn-header fw-bold px-3 rounded-pill shadow-sm" onclick="openModal('masuk')">
                                 <i class="fas fa-plus me-1"></i> Tambah
@@ -680,7 +680,7 @@
                         <div class="d-flex gap-2">
                              <div class="position-relative">
                                 <i class="fas fa-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted" style="font-size: 0.8rem;"></i>
-                                <input type="text" id="searchKeluar" class="form-control form-control-sm search-input shadow-sm ps-5" placeholder="Cari Surat..." onkeyup="resetPagination('keluar'); renderTables()">
+                                <input type="text" id="searchKeluar" class="form-control form-control-sm search-input shadow-sm ps-5" placeholder="Cari Surat..." onkeyup="resetPagination('keluar'); renderTables()" autocomplete="off">
                             </div>
                             <button class="btn btn-keluar btn-header fw-bold px-3 rounded-pill shadow-sm" onclick="openModal('keluar')">
                                 <i class="fas fa-plus me-1"></i> Tambah
@@ -1874,7 +1874,7 @@
 			else fileHelp.innerText = "Dokumen fisik belum di-scan/diunggah.";
 		}
 
-		function hapusData(type, idSurat) {
+        function hapusData(type, idSurat) {
             const sourceArray = type === 'masuk' ? globalData.suratMasuk : globalData.suratKeluar;
             const dataObj = sourceArray.find(item => item.values[0] === idSurat); // Cari berdasarkan ID
             if (!dataObj) return;
@@ -1887,7 +1887,11 @@
                 title: 'Hapus Data Permanen?', 
                 html: `Anda akan menghapus data ini secara permanen.<br>Masukkan password login Anda:`, 
                 input: 'password', 
-                inputAttributes: { autocapitalize: 'off', placeholder: 'Ketik password Anda' }, 
+                inputAttributes: { 
+                    autocapitalize: 'off', 
+                    placeholder: 'Ketik password Anda',
+                    autocomplete: 'new-password' // <-- Ini yang akan memblokir autofill
+                }, 
                 icon: 'warning', 
                 showCancelButton: true, 
                 confirmButtonColor: '#d33', 
